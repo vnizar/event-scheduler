@@ -49,7 +49,7 @@ const createDelayedJob = (jobs) => {
         });
 
         if (diff < 0) {
-            // job.delayUntil(Date.parse(data.scheduleServer));
+            job.delayUntil(Date.parse(data.scheduleServer));
         }
         console.log('End creating job');
 

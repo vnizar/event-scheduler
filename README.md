@@ -20,6 +20,11 @@ npm install
 
 * Configure `.env` file
 
+* Run migration files
+```
+npx sequelize-cli db:migrate
+```
+
 * Run application
 ```
 node app.js
@@ -45,4 +50,4 @@ node ./services/worker.js
 ![ERD](https://i.ibb.co.com/6mhzDP6/scheduler-drawio.png)
 
 ## System Design
-The idea is to send the notification using queue that support concurrency so it can handle large data to process and using cron to limit the queue creation and save some memory from queue usages.
+The idea is to send the notification using queue that support concurrency so it can handle large data to process and using cron to limit the queue creation and save some memory from queue usages. The application will convert the time input from user to UTC and save it to database, so the application will only refer to the converted time for the notification schedule. I use Bee-queue because it's pretty simple, can handle concurrent process, and have the ability to retry the failed jobs. I choose MySQL because we can leverage the database lock to avoid race condition.

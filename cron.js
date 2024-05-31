@@ -5,8 +5,8 @@ const { Op } = require('sequelize');
 const { createDelayedJob } = require('./services/queue');
 
 // TODO: change to every hour
-cron.schedule('*/30 * * * * *', async () => {
-    const now = moment('12/09/2024', "DD/MM/YYYY");
+cron.schedule('1 * * * *', async () => {
+    const now = moment();
     await createJobs(now);
 });
 
@@ -38,17 +38,3 @@ async function createJobs(date) {
 
     createDelayedJob(notifications);
 }
-
-// , async (status) => {
-//     const nextScheduleServer = moment(notif.scheduleServer).add(1, 'years');
-//     const nextScheduleLocal = moment(notif.scheduleLocal).add(1, 'years');
-//     await models.Notification.update({
-//         status: status,
-//         scheduleLocal: nextScheduleLocal,
-//         scheduleServer: nextScheduleServer
-//     }, {
-//         where: {
-//             id: notif.id,
-//         }
-//     });
-// }

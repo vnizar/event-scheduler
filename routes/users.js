@@ -46,20 +46,6 @@ router.post('/user', async (req, res) => {
     }
 });
 
-router.get('/users', async (req, res) => {
-    const users = await models.User.findAll();
-    if (!users) {
-        res.status(404).json({ message: 'users not found' });
-        return;
-    }
-
-    for (const user of users) {
-        scheduleBirthdayNotification(user);
-    }
-
-    return res.status(201).json({ message: 'Users', users });
-});
-
 async function scheduleBirthdayNotification(user) {
     const userCheck = await models.Notification.findOne({
         where: {
@@ -78,14 +64,13 @@ async function scheduleBirthdayNotification(user) {
     convertedTz.set('year', currentYear);
     localTz.set('year', currentYear);
 
-    // if (moment().diff(convertedTz, 'days') > 0) {
-    //     convertedTz.add(1, 'years');
-    //     localTz.add(1, 'years');
-    // }
+    if (moment().diff(convertedTz, 'days') > 0) {
+        convertedTz.add(1, 'years');
+        localTz.add(1, 'years');
+    }
 
     const message = `Happy birthday ${user.firstName} ${user.lastName}!!`;
     const notification = { message, userId: user.id, scheduleLocal: localTz.format('YYYY-MM-DD HH:mm:ss'), scheduleServer: convertedTz.format('YYYY-MM-DD HH:mm:ss'), status: 'scheduled' };
-    console.log(notification);
     await models.Notification.create(notification);
 }
 
