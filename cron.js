@@ -4,7 +4,6 @@ const models = require('./models');
 const { Op } = require('sequelize');
 const { createDelayedJob } = require('./services/queue');
 
-// TODO: change to every hour
 cron.schedule('1 * * * *', async () => {
     const now = moment();
     await createJobs(now);
