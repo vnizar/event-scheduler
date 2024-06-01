@@ -39,7 +39,8 @@ const updateNotificationStatusById = async (notif, status) => {
     await models.Notification.update({
         status: status,
         scheduleLocal: nextScheduleLocal,
-        scheduleServer: nextScheduleServer
+        scheduleServer: nextScheduleServer,
+        sentAt: moment(),
     }, {
         where: {
             id: notif.id,
