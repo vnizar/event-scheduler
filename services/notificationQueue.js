@@ -4,8 +4,9 @@ const { Op } = require('sequelize');
 const { notificationQueue } = require('../config/queue');
 
 async function createNotificationJobs() {
-    const today = moment();
+    const today = moment('2024-02-06');
     today.set({ hour: 0, minute: 0, second: 0, milisecond: 0 });
+    console.log(today);
     const endDay = today.clone().add(1, 'days');
     const notifications = await models.Notification.findAll({
         include: {
@@ -34,8 +35,8 @@ async function createNotificationJobs() {
 }
 
 const updateNotificationStatusById = async (notif, status) => {
-    const nextScheduleServer = moment(notif.scheduleServer).add(1, 'hours');
-    const nextScheduleLocal = moment(notif.scheduleLocal).add(1, 'hours');
+    const nextScheduleServer = moment(notif.scheduleServer).add(1, 'years');
+    const nextScheduleLocal = moment(notif.scheduleLocal).add(1, 'years');
     await models.Notification.update({
         status: status,
         scheduleLocal: nextScheduleLocal,
@@ -72,12 +73,12 @@ const createDelayedJobs = (notifications, cb) => {
         if (diff < 0) {
             job.delayUntil(Date.parse(data.scheduleServer));
         }
-        console.log('End creating job');
 
         jobList.push(job);
+        console.log('End creating job');
     }
 
-    if (jobList.length() > 0) {
+    if (jobList.length > 0) {
         notificationQueue.saveAll(jobList)
             .then((errors) => {
                 console.log(errors);

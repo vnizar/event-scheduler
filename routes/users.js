@@ -121,11 +121,6 @@ async function scheduleBirthdayNotification(user) {
     convertedTz.set('year', currentYear);
     localTz.set('year', currentYear);
 
-    if (moment().diff(convertedTz, 'days') > 0) {
-        convertedTz.add(1, 'years');
-        localTz.add(1, 'years');
-    }
-
     const message = `Happy birthday ${tmpUser.firstName} ${tmpUser.lastName}!!`;
     const notification = { message, userId: tmpUser.id, scheduleLocal: localTz.format('YYYY-MM-DD HH:mm:ss'), scheduleServer: convertedTz.format('YYYY-MM-DD HH:mm:ss'), status: 'scheduled' };
     await models.Notification.create(notification);
