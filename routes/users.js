@@ -78,6 +78,11 @@ router.put('/user/:id', async (req, res) => {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
+    const birthdayDate = moment(new Date(birthday)).format('YYYY-MM-DD');
+    if (birthdayDate === null) {
+        return res.status(400).json({ message: 'Invalid birthday date' });
+    }
+
     const user = await models.User.findOne({
         where: { id: id }
     });
@@ -85,10 +90,12 @@ router.put('/user/:id', async (req, res) => {
         return res.status(404).json({ message: 'User Not Found' });
     }
 
+    const data = { firstName, lastName, birthday: birthdayDate, location };
+
     try {
         await sequelize.transaction(async t => {
-            const saveUser = await models.User.update(user);
-            await saveUser.save();
+            await user.update(data);
+            await user.save();
 
             if (!saveUser) {
                 return res.status(500).json({ message: 'something went wrong' });
