@@ -27,8 +27,6 @@ router.post('/user', async (req, res) => {
         return res.status(400).json({ message: 'Email already exists.' });
     }
 
-    console.log(birthdayDate);
-
     try {
         await sequelize.transaction(async t => {
             const saveUser = await models.User.create(user);

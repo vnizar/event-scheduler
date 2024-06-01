@@ -1,5 +1,5 @@
-const { notificationQueue } = require('./queue');
-const { sendNotification } = require('./api');
+const { notificationQueue } = require('../config/queue');
+const { sendNotification } = require('../services/api');
 
 notificationQueue.process(async (job) => {
     try {
