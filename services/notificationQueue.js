@@ -3,10 +3,9 @@ const models = require('../models');
 const { Op } = require('sequelize');
 const { notificationQueue } = require('../config/queue');
 
-async function createNotificationJobs() {
-    const today = moment('2024-02-06');
+exports.createNotificationJobs = async () => {
+    const today = moment();
     today.set({ hour: 0, minute: 0, second: 0, milisecond: 0 });
-    console.log(today);
     const endDay = today.clone().add(1, 'days');
     const notifications = await models.Notification.findAll({
         include: {
@@ -29,12 +28,12 @@ async function createNotificationJobs() {
         }
     });
 
-    createDelayedJobs(notifications, (data, result) => {
-        updateNotificationStatusById(data, result);
+    exports.createDelayedJobs(notifications, (data, result) => {
+        exports.updateNotificationStatusById(data, result);
     });
 }
 
-const updateNotificationStatusById = async (notif, status) => {
+exports.updateNotificationStatusById = async (notif, status) => {
     const nextScheduleServer = moment(notif.scheduleServer).add(1, 'years');
     const nextScheduleLocal = moment(notif.scheduleLocal).add(1, 'years');
     await models.Notification.update({
@@ -49,7 +48,7 @@ const updateNotificationStatusById = async (notif, status) => {
     });
 }
 
-const createDelayedJobs = (notifications, cb) => {
+exports.createDelayedJobs = (notifications, cb) => {
     const jobList = [];
     for (const data of notifications) {
         console.log(`Creating job ${data.id}`);
@@ -63,8 +62,6 @@ const createDelayedJobs = (notifications, cb) => {
         job.retries(3);
         job.on('succeeded', (result) => {
             console.log('completed job ');
-            console.log(job.id);
-            console.log(result);
 
             cb(data, result);
         });
@@ -85,5 +82,3 @@ const createDelayedJobs = (notifications, cb) => {
             });
     }
 }
-
-module.exports = { createNotificationJobs };

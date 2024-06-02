@@ -10,9 +10,6 @@ app.use(bodyParser.json());
 
 app.use('/', users);
 
-cron.init();
-worker.init();
-
 app.listen(3000, () => {
     console.log('Listening...');
 });

@@ -26,24 +26,25 @@ npx sequelize-cli db:migrate
 ```
 
 * Run application
+
+This application have 3 main services to make it loose coupled between services
+
+1. Web application
+This is where the application run and do transaction via http call, i.e create user. To run the web server, run this command:
 ```
 node app.js
 ```
 
-This application have 3 main services:
-1. Web application
-This is where the application run and do transaction via http call, i.e create user.
-
 2. Cron
 Create jobs based on users who have birthday at the same day. To run this from the root project:
 ```
-node cron.js
+node jobs/cron.js
 ```
 
 3. Worker
 Handle created jobs from Cron and trigger send API call and update notification status. To run this from the root project:
 ```
-node ./services/worker.js
+node ./queues/worker.js
 ```
 
 ## ERD

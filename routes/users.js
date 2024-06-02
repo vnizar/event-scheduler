@@ -6,6 +6,7 @@ const moment = require('moment-timezone');
 
 router.post('/user', async (req, res) => {
     const { firstName, email, lastName, birthday, location } = req.body;
+
     if (!firstName || !email || !lastName || !birthday || !location) {
         return res.status(400).json({ message: 'All fields are required' });
     }
@@ -90,7 +91,10 @@ router.put('/user/:id', async (req, res) => {
         return res.status(404).json({ message: 'User Not Found' });
     }
 
-    const data = { firstName, lastName, birthday: birthdayDate, location };
+    const index = moment.tz.names().map(item => item.replace("_", " ")).findIndex(item => item.includes(location));
+    const timezone = index > -1 ? moment.tz.names()[index] : "GMT0";
+
+    const data = { firstName, lastName, birthday: birthdayDate, location: timezone };
 
     try {
         await sequelize.transaction(async t => {

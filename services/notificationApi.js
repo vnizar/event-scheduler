@@ -1,6 +1,6 @@
 const { client } = require('../config/api');
 
-const sendNotification = async (email, message) => {
+exports.sendNotification = async (email, message) => {
     try {
         const response = await client.post('/send-email', {
             email,
@@ -16,7 +16,4 @@ const sendNotification = async (email, message) => {
         console.log(error);
         return 'failed';
     }
-
 }
-
-module.exports = { sendNotification }
